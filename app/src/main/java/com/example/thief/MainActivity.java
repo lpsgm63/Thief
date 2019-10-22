@@ -1,18 +1,30 @@
 package com.example.thief;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     String departure="10:00", arrival="11:00", transform="Success";
     private static final int GRANTED = 101;
     private static final int DENIED = 102;
+
+    public MainHandler dialoghandler = new MainHandler();
 
     TextView  time_d,time_a,success;
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +85,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         success.setText(transform);
         ImageButton call = (ImageButton)findViewById(R.id.sad);
         call.setOnClickListener(this);
-
     }
 
 
     @Override
     public void onClick(View v) {
-        startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:01041921420")));
+        PermissionDialog();
+    }
+
+    private void PermissionDialog(){
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                dialoghandler.sendEmptyMessage(GRANTED);
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_SHORT).show();
+                dialoghandler.sendEmptyMessage(DENIED);
+            }
+        };
+        new TedPermission(this)
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage("고객센터로의 전화를 위한 권한이 필요해요")
+                .setPermissions(Manifest.permission.CALL_PHONE)
+                .check();
+
+    }
+    public class MainHandler extends Handler{
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what){
+                case GRANTED:
+                    startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:01041921420")));
+                    break;
+                case DENIED:
+                    finish();
+                    break;
+                default:
+                    super.handleMessage(msg);
+                    break;
+            }
+        }
     }
 }
