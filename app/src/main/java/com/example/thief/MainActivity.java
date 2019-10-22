@@ -2,12 +2,17 @@ package com.example.thief;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     String departure="10:00", arrival="11:00", transform="Success";
+    private static final int GRANTED = 101;
+    private static final int DENIED = 102;
 
     TextView  time_d,time_a,success;
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
         time_d.setText(departure);
         time_a.setText(arrival);
         success.setText(transform);
+        ImageButton call = (ImageButton)findViewById(R.id.sad);
+        call.setOnClickListener(this);
+
     }
 
+
+    @Override
+    public void onClick(View v) {
+        startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:01041921420")));
+    }
 }
