@@ -3,21 +3,16 @@ package com.example.thief;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.DropBoxManager;
-
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
-import java.util.Map;
+import android.util.Log;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    String departure="10:00", arrival="11:00", transform="Success";
 
+    TextView  time_d,time_a,success;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         /*
         LineChart lineChart = (LineChart)findViewById(R.id.lineChart);
@@ -59,5 +54,18 @@ public class MainActivity extends AppCompatActivity {
         lineChart.setData(data);
         lineChart.animateY(5000);
 */
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            departure = bundle.get("departure").toString();
+            arrival = bundle.get("arrival").toString();
+            transform = bundle.get("transform").toString();
+        }
+        time_d = (TextView)findViewById(R.id.departure);
+        time_a = (TextView)findViewById(R.id.arrival);
+        success = (TextView)findViewById(R.id.transform);
+        time_d.setText(departure);
+        time_a.setText(arrival);
+        success.setText(transform);
     }
+
 }
