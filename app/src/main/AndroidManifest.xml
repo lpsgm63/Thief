@@ -20,7 +20,7 @@
 
         </activity>
         <service
-            android:name=".FirebaseInstanceIDService"
+            android:name=".Message"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:735682347075:android:c5f8844ca1b90bc96e54f6",
+        "mobilesdk_app_id": "1:735682347075:android:920b32affe3f9d3c6e54f6",
         "android_client_info": {
           "package_name": "com.example.thief"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "735682347075-vh2ndtqtef3jph0i7g2cgi0bopfuajm9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.thief",
+            "certificate_hash": "0e9a0df35b845ab1c1b48c5b115e09cdf4345f56"
+          }
+        },
         {
           "client_id": "735682347075-02ne44j02orh0cckfd4q5r8d5qqf8qar.apps.googleusercontent.com",
           "client_type": 3
