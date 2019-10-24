@@ -1,3 +1,13 @@
+/***************************************************************************************************
+ *
+ *          제목 : 도착시간 알람 및 위치와 시간 그리고 전송 성공 출력 앱
+ *
+ *          상세 설명 : 라즈베리파이에서 온 데이터를 활용하여 출발과 도착에 대한 시간 및
+ *          위치 정보를 각각 시계와 구글 지도로 표시한다. 또한 고객의 만족도에 따라 만족시
+ *          감사를 불만족시 고객센터와의 연락을 주선한다.
+ *
+ **************************************************************************************************/
+
 package com.example.thief;
 
 import androidx.annotation.NonNull;
@@ -8,7 +18,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int DENIED = 102;
     private MainHandler dialoghandler = new MainHandler();
     private GoogleMap mMap;
-    private String departure="10:00", arrival="11:00", transform="Success";
+    private String departure="20:32", arrival="21:16", transform="Success";
     private TextView  time_d,time_a,success;
     private int permissionCheck;
     private double longtitude,latitude;
@@ -43,33 +52,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //휴대폰 gps 현재 위치 정보 반환
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        permissionCheck = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
+        permissionCheck = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION); //gps사용에 따른 권한 확인
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         longtitude = location.getLongitude();
         latitude = location.getLatitude();
 
-
+        //구글 Map 설정
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //IntroActivity에서 intent를 통해 넘겨준 정보 MainActivity 변수로 변환
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             departure = bundle.get("departure").toString();
             arrival = bundle.get("arrival").toString();
             transform = bundle.get("transform").toString();
         }
+
+        //출발시간 및 종료시간 view 세팅
         time_d = (TextView)findViewById(R.id.departure);
         time_a = (TextView)findViewById(R.id.arrival);
         success = (TextView)findViewById(R.id.transform);
         time_d.setText(departure);
         time_a.setText(arrival);
         success.setText(transform);
+
+        //고객센터 전화 및 만족도 버튼 세팅
         ImageButton call = (ImageButton)findViewById(R.id.sad);
         ImageButton satisfaction = (ImageButton)findViewById(R.id.happy);
         call.setOnClickListener(this);
         satisfaction.setOnClickListener(this);
     }
+
+    //버튼 클릭시 활성화
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.sad) {
@@ -78,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId() == R.id.happy){
             Toast.makeText(MainActivity.this, "만족해주셔서 감사합니다!!!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
+    //권한 획득 메시지 출력
     private void PermissionDialog(){
         PermissionListener permissionListener = new PermissionListener() {
             @Override
@@ -104,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //Map에서 현재 위치 및 출발 위치(가상)를 Pin으로 출력
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -124,12 +144,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
     }
 
+    //부하를 덜기 위해 Handler 사용
     public class MainHandler extends Handler{
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what){
                 case GRANTED:
-                    startActivity(new Intent("android.intent.action.DIAL", Uri.parse("tel:01041921420")));
+                    startActivity(new Intent("android.intent.action.DIAL", Uri.parse("tel:01234567890")));
                     break;
                 case DENIED:
                     finish();
