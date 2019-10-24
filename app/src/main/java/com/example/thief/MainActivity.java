@@ -84,13 +84,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         time_a.setText(arrival);
         success.setText(transform);
         ImageButton call = (ImageButton)findViewById(R.id.sad);
+        ImageButton satisfaction = (ImageButton)findViewById(R.id.happy);
         call.setOnClickListener(this);
+        satisfaction.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
-        PermissionDialog();
+        if(v.getId() == R.id.sad) {
+            PermissionDialog();
+        }
+        else if(v.getId() == R.id.happy){
+            Toast.makeText(MainActivity.this, "만족해주셔서 감사합니다!!!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void PermissionDialog(){
